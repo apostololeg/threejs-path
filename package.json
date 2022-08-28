@@ -1,0 +1,43 @@
+{
+  "name": "threejs-path",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apostololeg/threejs-path.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apostololeg/threejs-path/issues"
+  },
+  "homepage": "https://github.com/apostololeg/threejs-path#readme",
+  "scripts": {
+    "dev": "rollup -c --environment PORT=4141 --environment INCLUDE_DEPS,BUILD:production --watch",
+    "release": "standard-version",
+    "release:patch": "yarn release -- --release-as patch",
+    "release:minor": "yarn release -- --release-as minor",
+    "release:major": "yarn release -- --release-as major",
+    "release:as": "yarn release -- --release-as"
+  },
+  "standard-version": {
+    "scripts": {
+      "postchangelog": "replace ' (#\\d+)' ' [`$1`](github.com/apostololeg/threejs-path/issues/$1)' CHANGELOG.md"
+    }
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@types/three": "^0.143.1",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-serve": "^2.0.1",
+    "rollup-plugin-typescript2": "^0.33.0",
+    "roothree": "^0.0.1",
+    "serve": "^14.0.1",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "rollup": "^2.78.1"
+  }
+}

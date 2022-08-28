@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "allowJs": true,
+    "allowUmdGlobalAccess": true, // make typescript work with ProvidePlugin
+    // "noImplicitAny": false,
+    // "incremental": true,
+    "allowSyntheticDefaultImports": true,
+    // "downlevelIteration": true,
+    "jsx": "react-jsx",
+    // "target": "es6",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    // "isolatedModules": true,
+    "esModuleInterop": true,
+    // "lib": ["esnext", "dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./",
+    "baseUrl": "./",
+    "rootDir": "./",
+    "declaration": true,
+    // "declarationDir": "dist/types",
+    // "emitDeclarationOnly": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "customMatcher": "\\.styl$"
+        }
+      }
+    ]
+  },
+  "include": ["./"],
+  "exclude": ["node_modules"],
+  "plugins": ["typescript-eslint-language-service"]
+}
