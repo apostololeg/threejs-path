@@ -15,6 +15,7 @@
   "homepage": "https://github.com/apostololeg/threejs-path#readme",
   "scripts": {
     "dev": "rollup -c --environment PORT=4141 --environment INCLUDE_DEPS,BUILD:production --watch",
+    "server": "nodemon ./src/server.js",
     "release": "standard-version",
     "release:patch": "yarn release -- --release-as patch",
     "release:minor": "yarn release -- --release-as minor",
@@ -30,11 +31,15 @@
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/three": "^0.143.1",
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-typescript2": "^0.33.0",
-    "roothree": "^0.0.1",
+    "roothree": "^0.0.2",
     "serve": "^14.0.1",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "typescript": "^4.7.4"
   },
   "devDependencies": {

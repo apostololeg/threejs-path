@@ -22,7 +22,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./",
     "baseUrl": "./",
-    "rootDir": "./",
+    "rootDir": "./src/client/",
     "declaration": true,
     // "declarationDir": "dist/types",
     // "emitDeclarationOnly": true,
@@ -35,7 +35,7 @@
       }
     ]
   },
-  "include": ["./"],
-  "exclude": ["node_modules"],
+  "include": ["src/client/"],
+  "exclude": ["node_modules", "src/server.js"],
   "plugins": ["typescript-eslint-language-service"]
 }
