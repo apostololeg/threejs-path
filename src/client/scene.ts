@@ -2,11 +2,16 @@ import * as THREE from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 // import { CMSMode, CSM } from 'three/examples/jsm/csm/CSM.js';
 import RootThree from 'roothree';
+import move from './move';
 
 const textureLoader = new THREE.TextureLoader();
 
+// @ts-ignore
+window.THREE = THREE;
+
 const sceneSize = 500;
-// const updaters = [];
+const yOffset = 0.5;
+const updaters = [];
 const colors = {
   fog: 0xfdbe6e00,
   boxes: 0x0057b800,
@@ -37,9 +42,14 @@ function createLight(_) {
   const group = new THREE.Group();
 
   const dirLight = new THREE.DirectionalLight(0xffb341, 1);
-  dirLight.position.set(50, 100, 100);
+  dirLight.position.set(-sceneSize, sceneSize, -sceneSize);
   dirLight.castShadow = true;
+  // dirLight.shadow.mapSize.width = 512 * sceneSize;
+  // dirLight.shadow.mapSize.height = 512 * sceneSize;
   group.add(dirLight);
+
+  // const helper = new THREE.DirectionalLightHelper(dirLight, 5);
+  // group.add(helper);
 
   const ambient = new THREE.AmbientLight(0xffffff, 1);
   ambient.position.set(100, 100, 100);
@@ -98,20 +108,31 @@ function createSkybox(_) {
   });
 }
 
-function createUser() {
-  return new THREE.Mesh(
-    new THREE.SphereGeometry(0.2, 32, 32),
+function createUser(color?) {
+  const obj = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 32, 32),
     new THREE.MeshStandardMaterial({
-      color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+      color: color
+        ? new THREE.Color(...color)
+        : new THREE.Color(Math.random(), Math.random(), Math.random()),
     })
   );
+
+  obj.castShadow = true;
+  // obj.position.y = 0.2;
+
+  return obj;
 }
 
 export default class Scene {
   _;
+  socket;
   users = {};
+  observerMoveUpdater;
 
-  constructor() {
+  constructor(params: any) {
+    this.socket = params.socket;
+
     this._ = new RootThree({
       renderer: {
         antialias: true,
@@ -125,9 +146,12 @@ export default class Scene {
         targets: [],
       },
       onReady: this.onSceneReady,
-      // update() {
-      //   updaters.forEach(u => u());
-      // },
+      observer: {
+        onMove: this.onObserverMove,
+      },
+      update(time) {
+        updaters.forEach(u => u(time));
+      },
     });
   }
 
@@ -145,12 +169,22 @@ export default class Scene {
     _.scene.add(ground);
     _.scene.add(boxes);
 
+    _.camera.position.y = 0.3;
+    _.camera.position.z = 0.5;
+
     // const scale = 10;
     // const upScale = 1 * scale;
     // const downScale = 1 / scale;
 
-    _.observer.object.add(createUser());
+    // @ts-ignore
+    const color = new URL(window.location).searchParams
+      .get('color')
+      .split(',')
+      .map(n => +n);
+
+    _.observer.object.add(createUser(color));
     _.observer.object.rotation.y = -1.5;
+    _.observer.target.scale.set(0.5, 0.5, 0.5);
 
     _.observer.addTeleportTargets([ground, boxes]);
   };
@@ -170,14 +204,38 @@ export default class Scene {
           this.users[id].material.color = new THREE.Color(...v);
           break;
         case 'position':
-          this.users[id].position.set(...v);
+          this.moveUser(this.users[id], v);
           break;
       }
     });
   }
 
+  onObserverMove = position => {
+    this.moveUser(this._.observer.object, position);
+    this.socket.emit('user-update', { id: this.socket.id, data: { position } });
+  };
+
+  moveUser = (obj, pos) => {
+    const startPos = Object.values(obj.position.clone());
+    const endPos = Object.values(pos);
+    const clear = () => this.removeUpdater(this.observerMoveUpdater);
+
+    clear();
+    this.observerMoveUpdater = move(obj, [startPos, endPos], 0.1, clear);
+
+    this.addUpdater(this.observerMoveUpdater);
+  };
+
   removeUser(id) {
     this._.scene.remove(this.users[id]);
     delete this.users[id];
+  }
+
+  addUpdater(fn) {
+    updaters.push(fn);
+  }
+
+  removeUpdater(fn) {
+    updaters.splice(updaters.indexOf(fn), 1);
   }
 }

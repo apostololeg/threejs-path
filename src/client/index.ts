@@ -3,13 +3,14 @@ import { io } from 'socket.io-client';
 import Scene from './scene';
 
 const socket = io();
-const scene = new Scene();
+const scene = new Scene({ socket });
 
-console.log(scene);
+// @ts-ignore
+window.scene = scene;
 
 socket.on('connect', () => {
   const { id } = socket;
-  const me = scene._.observer.object;
+  const me = scene._.observer.object.children[1];
   const { color } = me.material;
 
   console.log('< connect', id);

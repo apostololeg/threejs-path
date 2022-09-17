@@ -2316,10 +2316,10 @@ rollup@^2.78.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
-roothree@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/roothree/-/roothree-0.0.2.tgz#cb0b88925ccb905cc6523377f7ee68ed097f2d52"
-  integrity sha512-mzN1/JK404pqOr1VsNwFYubxMwEJYidBUejwFWY1IVg+Nkk2o3FaBBy5i6zxFyKY2DsNVl2Q/RhfrE4MRzITjQ==
+roothree@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/roothree/-/roothree-0.0.3.tgz#064967518ae1ecf828974e80f107679b3a4d8055"
+  integrity sha512-dhugfuW6w8fvJ/L13BvgcG6R4g5ughp/QEbNJzHySc1mhszjCu09PytN612IlO8l/X3lwzLQBV960zg/oBxKNg==
   dependencies:
     dat.gui "^0.7.7"
     replace "^1.2.1"

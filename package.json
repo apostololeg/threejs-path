@@ -36,7 +36,7 @@
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-typescript2": "^0.33.0",
-    "roothree": "^0.0.2",
+    "roothree": "^0.0.3",
     "serve": "^14.0.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
