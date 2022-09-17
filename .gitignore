@@ -1,4 +1,5 @@
 node_modules/
 bundle.js
 
+.env
 yarn-error.log
