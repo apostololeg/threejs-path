@@ -3,7 +3,7 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 // import { CMSMode, CSM } from 'three/examples/jsm/csm/CSM.js';
 import RootThree from 'roothree';
 import move from './move';
-
+import getTerrain from './terrain';
 const textureLoader = new THREE.TextureLoader();
 
 // @ts-ignore
@@ -16,27 +16,6 @@ const colors = {
   fog: 0xfdbe6e00,
   boxes: 0x0057b800,
 };
-
-function getGround() {
-  const geometry = new THREE.CircleGeometry(sceneSize / 2 + 10, 32);
-  const texture = textureLoader.load('/images/asphalt.jpg');
-  const bumpMap = textureLoader.load('/images/asphalt-normals.jpg');
-  const material = new THREE.MeshPhongMaterial({
-    color: '#222',
-    map: texture,
-    bumpMap,
-    bumpScale: 1,
-    shininess: 0,
-  });
-
-  texture.anisotropy = 2;
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(512, 512);
-  const ground = new THREE.Mesh(geometry, material);
-  ground.rotation.x = -Math.PI / 2;
-  ground.receiveShadow = true;
-  return ground;
-}
 
 function createLight(_) {
   const group = new THREE.Group();
@@ -51,7 +30,7 @@ function createLight(_) {
   // const helper = new THREE.DirectionalLightHelper(dirLight, 5);
   // group.add(helper);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 1);
+  const ambient = new THREE.AmbientLight(0xffffff, 0.9);
   ambient.position.set(100, 100, 100);
   group.add(ambient);
 
@@ -155,8 +134,8 @@ export default class Scene {
     });
   }
 
-  onSceneReady = _ => {
-    const ground = getGround();
+  onSceneReady = async _ => {
+    const ground = await getTerrain();
     const boxes = createBoxes();
 
     // _.observer.target.material.color = new THREE.Color('#0f0');
@@ -184,6 +163,7 @@ export default class Scene {
 
     _.observer.object.add(createUser(color));
     _.observer.object.rotation.y = -1.5;
+    _.observer.object.position.y = 8;
     _.observer.target.scale.set(0.5, 0.5, 0.5);
 
     _.observer.addTeleportTargets([ground, boxes]);
@@ -221,7 +201,7 @@ export default class Scene {
     const clear = () => this.removeUpdater(this.observerMoveUpdater);
 
     clear();
-    this.observerMoveUpdater = move(obj, [startPos, endPos], 0.1, clear);
+    this.observerMoveUpdater = move(obj, [startPos, endPos], 0.3, clear);
 
     this.addUpdater(this.observerMoveUpdater);
   };
