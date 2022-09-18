@@ -3,6 +3,9 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import livereload from 'rollup-plugin-livereload';
 import serve from 'rollup-plugin-serve';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
+
+const env = require('dotenv').config();
 
 export default {
   input: 'src/client/index.ts',
@@ -17,7 +20,10 @@ export default {
       useTsconfigDeclarationDir: true,
       tsconfig: 'tsconfig.json',
     }),
-    livereload(),
+    injectProcessEnv({
+      PORT: env.PORT,
+    }),
+    env.LIVERELOAD && livereload(),
     serve({
       contentBase: '',
       port: 4141,

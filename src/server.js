@@ -4,6 +4,8 @@ const http = require('http');
 const path = require('path');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
+const { PORT } = require('dotenv').config().parsed;
+
 const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'client/public')));
@@ -38,6 +40,6 @@ io.on('connection', socket => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(PORT, () => {
+  console.log('listening on port', PORT);
 });
