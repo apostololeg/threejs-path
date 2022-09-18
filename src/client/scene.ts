@@ -9,7 +9,7 @@ const textureLoader = new THREE.TextureLoader();
 // @ts-ignore
 window.THREE = THREE;
 
-const sceneSize = 10;
+const sceneSize = 500;
 const yOffset = 0.5;
 const updaters = [];
 const colors = {
