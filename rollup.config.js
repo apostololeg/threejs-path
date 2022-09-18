@@ -10,7 +10,7 @@ const env = require('dotenv').config();
 export default {
   input: 'src/client/index.ts',
   output: {
-    file: 'src/client/public/bundle.js',
+    file: 'src/client/build/client.js',
     format: 'iife',
   },
   plugins: [

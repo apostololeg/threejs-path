@@ -35,7 +35,7 @@
       }
     ]
   },
-  "include": ["src/client/"],
-  "exclude": ["node_modules", "src/server.js"],
+  "include": ["src/client/", "src/client/webpack.config.js"],
+  "exclude": ["node_modules"],
   "plugins": ["typescript-eslint-language-service"]
 }

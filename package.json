@@ -1,22 +1,23 @@
 {
-  "name": "threejs-path",
+  "name": "world.js",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apostololeg/threejs-path.git"
+    "url": "git+https://github.com/@foreverido/world.js.git"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/apostololeg/threejs-path/issues"
+    "url": "https://github.com/@foreverido/world.js/issues"
   },
-  "homepage": "https://github.com/apostololeg/threejs-path#readme",
+  "homepage": "https://github.com/@foreverido/world.js#readme",
   "scripts": {
-    "build": "rollup -c --environment PORT=4141 --environment INCLUDE_DEPS,BUILD:production",
-    "dev": "rollup -c --environment PORT=4141 --environment INCLUDE_DEPS,BUILD:production --watch",
-    "server": "nodemon ./src/server.js",
+    "dev": "NODE_ENV=development webpack-dev-server --mode=development --config ./src/client/webpack.config.js --progress",
+    "build": "NODE_ENV=production webpack  --config ./src/client/webpack.config.js --progress",
+    "server": "nodemon --watch ./src/server --ext ts,json --exec \"node --experimental-specifier-resolution=node --loader ts-node/esm ./src/server/index.ts\"",
     "release": "standard-version",
     "release:patch": "yarn release -- --release-as patch",
     "release:minor": "yarn release -- --release-as minor",
@@ -25,27 +26,59 @@
   },
   "standard-version": {
     "scripts": {
-      "postchangelog": "replace ' (#\\d+)' ' [`$1`](github.com/apostololeg/threejs-path/issues/$1)' CHANGELOG.md"
+      "postchangelog": "replace ' (#\\d+)' ' [`$1`](github.com/@foreverido/world.js/issues/$1)' CHANGELOG.md"
     }
   },
   "dependencies": {
+    "@foreverido/uilib": "^3.4.1",
+    "@prisma/client": "^4.3.1",
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/three": "^0.143.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "cookie-parser": "^1.4.6",
+    "copy-webpack-plugin": "^11.0.0",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
+    "html-webpack-partials-plugin": "^0.8.0",
+    "html-webpack-plugin": "^5.5.0",
     "http": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "lodash.pick": "^4.4.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "prisma": "^4.3.1",
+    "qs": "^6.11.0",
+    "react": "^18.2.0",
     "rollup-plugin-inject-process-env": "^1.3.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^2.0.1",
     "rollup-plugin-typescript2": "^0.33.0",
-    "roothree": "^0.0.3",
+    "roothree": "^0.0.5",
     "serve": "^14.0.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-bundle-analyzer": "^4.6.1"
   },
   "devDependencies": {
-    "rollup": "^2.78.1"
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
+    "babel-loader": "^8.2.5",
+    "babel-preset-react-app": "^10.0.1",
+    "css-loader": "^6.7.1",
+    "css-modules-typescript-loader": "^4.0.1",
+    "file-loader": "^6.2.0",
+    "postcss": "^8.4.16",
+    "postcss-loader": "^7.0.1",
+    "postcss-preset-env": "^7.8.2",
+    "react-refresh": "^0.14.0",
+    "react-svg-loader": "^3.0.3",
+    "rollup": "^2.78.1",
+    "style-loader": "^3.3.1",
+    "stylus": "^0.59.0",
+    "stylus-loader": "^7.0.0",
+    "ts-node": "^10.9.1",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.0"
   }
 }
