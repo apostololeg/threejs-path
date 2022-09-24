@@ -11,7 +11,9 @@ export const getLineLength = points =>
 
 export const getMiddlePoint = (first, last) => first + (last - first) / 2;
 
-export function getCubicCurve3([x0, y0, z0], [x1, y1, z1], zOffset = 1) {
+export function getCubicCurve3([x0, y0, z0], [x1, y1, z1], _zOffset = 1) {
+  const zOffset = (Math.max(z0, z1) - Math.min(z0, z1)) / 2;
+
   return [
     new Vector3(x0, y0, z0),
     new Vector3(

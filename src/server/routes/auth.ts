@@ -21,6 +21,7 @@ function userResponse(user, socketId) {
 function userToSocketId(user) {
   const socketId = socketIds[user.id] ?? nanoid();
   users[socketId] = user as any;
+  socketIds[user.id] = socketId;
   return socketId;
 }
 

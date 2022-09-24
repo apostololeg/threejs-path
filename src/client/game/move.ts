@@ -21,11 +21,13 @@ export function getMovingCurve(from, to, length = getLineLength([from, to])) {
 export default function move(obj, [from, to], speed, onComplete) {
   const length = getLineLength([from, to]);
   const curve = getMovingCurve(from, to, length);
-  const step = speed / length;
   let progress = 0;
+  let startTime = 0;
 
-  return () => {
-    progress += step;
+  return time => {
+    if (!startTime) return (startTime = time);
+
+    progress = ((time - startTime) * speed) / length;
     if (progress > 1) progress = 1;
 
     const pos = curve.getPoint(progress);

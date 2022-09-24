@@ -25,6 +25,7 @@ export default class Scene {
   users = {};
   updaters = [];
   observerMoveUpdater;
+  moveTarget;
 
   constructor(params: any) {
     this.params = params;
@@ -81,10 +82,14 @@ export default class Scene {
   };
 
   initObserver({ position, color }) {
-    this._.observer.object.add(createUser(color));
-    this._.observer.object.position.set(...position);
-    this._.observer.target.scale.set(0.5, 0.5, 0.5);
+    const { object, target } = this._.observer;
 
+    object.add(createUser(color));
+    object.position.set(...position);
+    target.scale.set(0.5, 0.5, 0.5);
+    target.material.color.setHex(object.children[1].material.color.getHex());
+    target.material.transparent = true;
+    target.material.opacity = 0.5;
     // this.addUpdater(this.updateNavigationGeometry);
   }
 
@@ -125,10 +130,19 @@ export default class Scene {
   moveUser = (obj: Object3D, pos) => {
     const startPos = Object.values(obj.position.clone());
     const endPos = Object.values(pos);
-    const clear = () => this.removeUpdater(this.observerMoveUpdater);
+
+    const clear = () => {
+      this.removeUpdater(this.observerMoveUpdater);
+      this._.scene.remove(this.moveTarget);
+    };
 
     clear();
-    this.observerMoveUpdater = move(obj, [startPos, endPos], 0.1, clear);
+
+    if (this.moveTarget) this._.scene.remove(this.moveTarget);
+    this.moveTarget = this._.observer.target.clone();
+    this._.scene.add(this.moveTarget);
+
+    this.observerMoveUpdater = move(obj, [startPos, endPos], 5, clear);
     this.addUpdater(this.observerMoveUpdater);
   };
 
