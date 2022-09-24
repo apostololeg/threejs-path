@@ -1,6 +1,6 @@
-import * as THREE from 'three';
+import { RepeatWrapping, PlaneGeometry, MeshPhongMaterial, Mesh } from 'three';
 
-const textureLoader = new THREE.TextureLoader();
+import textureLoader from '../loaders/texture';
 
 async function loadTerrain(url: RequestInfo | URL): Promise<Uint16Array> {
   const res = await fetch(url);
@@ -9,22 +9,17 @@ async function loadTerrain(url: RequestInfo | URL): Promise<Uint16Array> {
   return new Uint16Array(buffer);
 }
 
-export default async function getTerrain() {
+export default async function createTerrain() {
   const worldWidth = 200;
   const worldDepth = 200;
 
-  const geometry = new THREE.PlaneGeometry(
-    32,
-    32,
-    worldWidth - 1,
-    worldDepth - 1
-  );
+  const geometry = new PlaneGeometry(32, 32, worldWidth - 1, worldDepth - 1);
   const texture = textureLoader.load('/images/asphalt.jpg');
-  const bumpMap = textureLoader.load('/images/asphalt-normals.jpg');
+  const bumpMap = textureLoader.load('/images/asphalt-normals.png');
   const vertices = geometry.attributes.position.array;
 
   const data = Array.from(
-    new Uint16Array(await loadTerrain('/assets/terrain.bin'))
+    new Uint16Array(await loadTerrain('/models/terrain.bin'))
   ).map(v => (v / 65535) * 10);
 
   console.log(
@@ -39,17 +34,17 @@ export default async function getTerrain() {
     vertices[i * 3 + 2] = data[i];
   }
 
-  const material = new THREE.MeshPhongMaterial({
+  const material = new MeshPhongMaterial({
     color: 0xdddddd,
     map: texture,
     bumpMap,
     bumpScale: 1,
     shininess: 0,
   });
-  const terrain = new THREE.Mesh(geometry, material);
+  const terrain = new Mesh(geometry, material);
 
   texture.anisotropy = 2;
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.wrapS = texture.wrapT = RepeatWrapping;
   texture.repeat.set(128, 128);
 
   terrain.rotation.x = -Math.PI / 2;

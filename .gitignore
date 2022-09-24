@@ -1,5 +1,6 @@
 node_modules/
-bundle.js
+build/
 
+.vscode/
 .env
 yarn-error.log
