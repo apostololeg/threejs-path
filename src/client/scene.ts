@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { CMSMode, CSM } from 'three/examples/jsm/csm/CSM.js';
 import RootThree from 'roothree';
 import move from './move';
@@ -146,7 +147,7 @@ export default class Scene {
     createSkybox(_);
     _.scene.add(createLight(_));
     _.scene.add(ground);
-    _.scene.add(boxes);
+    // _.scene.add(boxes);
 
     _.camera.position.y = 0.3;
     _.camera.position.z = 0.5;
@@ -166,7 +167,9 @@ export default class Scene {
     _.observer.object.position.y = 8;
     _.observer.target.scale.set(0.5, 0.5, 0.5);
 
-    _.observer.addTeleportTargets([ground, boxes]);
+    _.observer.addTeleportTargets([ground]);
+
+    // this.loadModel(_.scene);
   };
 
   addUser(id, data?) {
@@ -218,4 +221,24 @@ export default class Scene {
   removeUpdater(fn) {
     updaters.splice(updaters.indexOf(fn), 1);
   }
+
+  // loadModel(scene) {
+  //   const url = '/assets/raw.glb';
+
+  //   const loader = new GLTFLoader();
+  //   loader.load(url, function (gltf) {
+  //     //   scene.add(gltf.scene);
+  //     //   render();
+  //     scene.add(gltf.scene);
+
+  //     gltf.scene.position.y = 8;
+
+  //     gltf.animations; // Array<THREE.AnimationClip>
+  //     gltf.scene; // THREE.Group
+  //     gltf.scenes; // Array<THREE.Group>
+  //     gltf.cameras; // Array<THREE.Camera>
+  //     gltf.asset; // Object
+  //     console.log(gltf);
+  //   });
+  // }
 }
