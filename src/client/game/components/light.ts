@@ -3,7 +3,7 @@ import { Group, DirectionalLight, AmbientLight } from 'three';
 export default function createLight({ sceneSize }) {
   const group = new Group();
 
-  const dirLight = new DirectionalLight(0xffb341, 1);
+  const dirLight = new DirectionalLight(0xffb341, 2);
   dirLight.position.set(-sceneSize, sceneSize, -sceneSize);
   dirLight.castShadow = true;
   // dirLight.shadow.mapSize.width = 512 * sceneSize;
@@ -13,7 +13,7 @@ export default function createLight({ sceneSize }) {
   // const helper = new DirectionalLightHelper(dirLight, 5);
   // group.add(helper);
 
-  const ambient = new AmbientLight(0xffffff, 1);
+  const ambient = new AmbientLight(0xffffff, 2);
   ambient.position.set(100, 100, 100);
   group.add(ambient);
 

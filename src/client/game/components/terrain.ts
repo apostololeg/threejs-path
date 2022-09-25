@@ -1,8 +1,18 @@
-import { RepeatWrapping, PlaneGeometry, MeshPhongMaterial, Mesh } from 'three';
+import {
+  DoubleSide,
+  RepeatWrapping,
+  PlaneGeometry,
+  MeshPhongMaterial,
+  Mesh,
+} from 'three';
 
 import textureLoader from '../loaders/texture';
 
 const size = 512;
+const plane = { width: 10, height: 10 };
+const yAmplitude = 0.01;
+const yOffset = 1000;
+
 const buildURL = (x, y, zoom) =>
   `https://api.mapbox.com/v4/mapbox.terrain-rgb/${zoom}/${x}/${y}@2x.jpg90?access_token=pk.eyJ1IjoiYXBvc3RvbG9sZWciLCJhIjoiY2tnNWk4aWI3MHVsbDJzcjJudGVkMWJyMCJ9.5N7wWFkKxF-JSGlvT3bsBA`;
 
@@ -54,35 +64,43 @@ async function loadImage(url: string): Promise<ImageData> {
   }
 }
 
-function getBinaryDataFromImageData(imageData: ImageData) {
+function getBinaryDataFromImageData(imageData: ImageData, yAmplitude, yOffset) {
   const { data, width, height } = imageData;
   const terrainData = new Array(width * height);
 
   for (let i = 0; i < data.length; i += 4) {
-    const x = i / 4;
-    // const y = Math.floor(i / 4 / width);
-    // const z = data[i] / 255;
-    // const index = y * width + x;
-    terrainData[x] =
-      ((data[i + 1] / 255 + data[i + 2] / 255 + data[i + 3] / 255) / 3) * 50;
+    const R = data[i];
+    const G = data[i + 1];
+    const B = data[i + 2];
+    const height = (R * 256 * 256 + G * 256 + B) * yAmplitude - yOffset;
+
+    terrainData[i / 4] = height;
   }
 
   return terrainData;
 }
 
 async function getTile(x, y, zoom) {
-  const imageData = await loadImage(buildURL(x, y, zoom));
-  const data = getBinaryDataFromImageData(imageData);
-  const { width, height } = imageData;
+  const imageUrl = buildURL('3826', '6127', 14);
+  const textureUrl = imageUrl;
 
-  const geometry = new PlaneGeometry(100, 100, size - 1, size - 1);
-  // const texture = textureLoader.load('/assets/rocks.jpeg');
+  const imageData = await loadImage(imageUrl);
+  const data = getBinaryDataFromImageData(imageData, yAmplitude, yOffset);
+  const geometry = new PlaneGeometry(
+    plane.width,
+    plane.width,
+    size - 1,
+    size - 1
+  );
+
+  const texture = textureLoader.load(textureUrl);
   // const bumpMap = textureLoader.load('/images/asphalt-normals.jpg');
-  const texture = textureLoader.load('/images/asphalt.jpg');
   const vertices = geometry.attributes.position.array;
 
-  console.log(width, height);
-  console.log('data', data);
+  console.log(imageUrl, imageData);
+  console.log(vertices.length / 3, data.length, data);
+  console.log('\n');
+
   if (vertices.length / 3 !== data.length) {
     throw new Error('Invalid data length');
   }
@@ -95,21 +113,23 @@ async function getTile(x, y, zoom) {
   const material = new MeshPhongMaterial({
     color: 0x333333,
     map: texture,
-    // bumpMap,
     bumpScale: 1,
     shininess: 0,
+    side: DoubleSide,
+    // bumpMap,
     // wireframe: true,
   });
   const terrain = new Mesh(geometry, material);
 
+  // texture.rotation.x = Math.PI;
   // texture.anisotropy = 2;
   // texture.wrapS = texture.wrapT = RepeatWrapping;
   // texture.repeat.set(8, 8);
 
   terrain.rotation.x = -Math.PI / 2;
   terrain.position.y = -5;
+  // terrain.receiveShadow = true;
 
-  terrain.receiveShadow = true;
   return terrain;
 }
 

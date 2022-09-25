@@ -14,7 +14,7 @@ import Terrain from './components/terrain';
 import createSky from './components/sky';
 import createUser from './components/user';
 import createSkyscrapers from './components/skyscrapers';
-import AIBot from './components/ai-bot';
+// import AIBot from './components/ai-bot';
 
 import move from './move';
 
@@ -92,7 +92,7 @@ export default class Scene extends EventTarget {
     // _.observer.addTeleportTargets([ground, skyscrapers]);
     _.observer.object.position.y = 10;
 
-    AIBot();
+    // AIBot();
   };
 
   initObserver({ position, color }) {
