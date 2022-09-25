@@ -1,5 +1,6 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
+import { config } from 'dotenv';
 
 import webpack from 'webpack';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
@@ -9,6 +10,10 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPartialsPlugin from 'html-webpack-partials-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+
+// @ts-ignore
+const env = config().parsed;
+console.log('env', env);
 
 // @ts-ignore
 // import pkg from '../../../package.json';
@@ -135,6 +140,7 @@ export default (_env, argv) => {
       new webpack.DefinePlugin({
         isDEV: JSON.stringify(isDev),
         VERSION: JSON.stringify(pkg.version),
+        MAPBOX_TOKEN: JSON.stringify(env.MAPBOX_TOKEN),
       }),
 
       new CopyWebpackPlugin({

@@ -14,7 +14,7 @@ const getLineLength = points =>
 export function getMovingCurve(from, to, length = getLineLength([from, to])) {
   return new CubicBezierCurve3(
     // @ts-ignore
-    ...getCubicCurve3(from, to, length / 3)
+    ...getCubicCurve3(from, to, length / 6)
   );
 }
 

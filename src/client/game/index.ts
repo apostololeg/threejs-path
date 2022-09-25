@@ -3,7 +3,7 @@ import type { Socket } from 'socket.io-client';
 
 import user from '../stores/user';
 
-import Scene from './scene';
+import Scene from './components/scene';
 
 class Game {
   scene: Scene;

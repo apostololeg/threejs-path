@@ -8,3 +8,9 @@ interface Window {
   webkitSpeechGrammarList: any;
   webkitSpeechRecognitionEvent: any;
 }
+
+declare global {
+  var MAPBOX_TOKEN: string;
+}
+
+export {};
