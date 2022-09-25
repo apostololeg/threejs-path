@@ -1,10 +1,16 @@
-import { Fog, Color, PCFSoftShadowMap, Object3D } from 'three';
+import {
+  PerspectiveCamera,
+  Fog,
+  Color,
+  PCFSoftShadowMap,
+  Object3D,
+} from 'three';
 import RootThree from 'roothree';
 
 import navigation from './components/navigation';
 import createLight from './components/light';
 import createGround from './components/ground';
-import createTerrain from './components/terrain';
+import Terrain from './components/terrain';
 import createSky from './components/sky';
 import createUser from './components/user';
 import createSkyscrapers from './components/skyscrapers';
@@ -13,13 +19,12 @@ import AIBot from './components/ai-bot';
 import move from './move';
 
 const sceneSize = 500;
-const yOffset = 0.5;
 const colors = {
-  fog: 0xfdbe6e00,
+  fog: 0xffffff,
   skyscrapers: 0x0057b800,
 };
 
-export default class Scene {
+export default class Scene extends EventTarget {
   _;
   params;
   users = {};
@@ -28,6 +33,8 @@ export default class Scene {
   moveTarget;
 
   constructor(params: any) {
+    super();
+
     this.params = params;
 
     this._ = new RootThree({
@@ -44,6 +51,18 @@ export default class Scene {
         onMove: this.onObserverMove,
         line: navigation.line,
       },
+      camera() {
+        const camera = new PerspectiveCamera(
+          90,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          300
+        );
+
+        camera.position.y = 2;
+
+        return camera;
+      },
       update: time => {
         this.updaters.forEach(u => u(time));
       },
@@ -51,31 +70,26 @@ export default class Scene {
   }
 
   onSceneReady = async _ => {
-    const ground = createGround({ sceneSize });
-    const terrain = await createTerrain();
-    const skyscrapers = createSkyscrapers({ sceneSize });
+    // const ground = createGround({ sceneSize });
+    // const skyscrapers = createSkyscrapers({ sceneSize });
+
+    new Terrain(this);
 
     if (this._.isVRSupported) this._.controllers.primaryIndex = 1;
 
-    // _.observer.target.material.color = new Color('#0f0');
+    // _.scene.fog = new Fog(colors.fog, 1, 300);
 
-    // _.scene.background = new Color(0xffd700);
-    _.scene.fog = new Fog(colors.fog, 1, 100);
+    console.log('this.camera', this._.camera);
 
     createSky(_);
     _.scene.add(createLight({ sceneSize }));
-    _.scene.add(ground);
-    _.scene.add(terrain);
-    _.scene.add(skyscrapers);
+    // _.scene.add(ground);
+    // _.scene.add(skyscrapers);
 
     _.camera.position.y = 0.3;
     _.camera.position.z = 0.5;
 
-    // const scale = 10;
-    // const upScale = 1 * scale;
-    // const downScale = 1 / scale;
-
-    _.observer.addTeleportTargets([ground, terrain, skyscrapers]);
+    // _.observer.addTeleportTargets([ground, skyscrapers]);
     _.observer.object.position.y = 10;
 
     AIBot();
@@ -142,7 +156,7 @@ export default class Scene {
     this.moveTarget = this._.observer.target.clone();
     this._.scene.add(this.moveTarget);
 
-    this.observerMoveUpdater = move(obj, [startPos, endPos], 5, clear);
+    this.observerMoveUpdater = move(obj, [startPos, endPos], 15, clear);
     this.addUpdater(this.observerMoveUpdater);
   };
 

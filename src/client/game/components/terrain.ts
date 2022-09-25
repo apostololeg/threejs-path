@@ -1,55 +1,71 @@
-import { RepeatWrapping, PlaneGeometry, MeshPhongMaterial, Mesh } from 'three';
+import * as THREE from 'three/build/three.module.js';
 
-import textureLoader from '../loaders/texture';
+type TerrainType = 'rgb' | 'vector';
 
-async function loadTerrain(url: RequestInfo | URL): Promise<Uint16Array> {
-  const res = await fetch(url);
-  const buffer = await res.arrayBuffer();
+const TYPE_TO_METHOD = {
+  rgb: 'getTerrainRgb',
+  vector: 'getTerrainVector',
+};
 
-  return new Uint16Array(buffer);
-}
+export default class Terrain {
+  _;
+  tgeo;
+  obj;
+  position = [];
+  type: TerrainType = 'rgb';
 
-export default async function createTerrain() {
-  const worldWidth = 200;
-  const worldDepth = 200;
-
-  const geometry = new PlaneGeometry(32, 32, worldWidth - 1, worldDepth - 1);
-  const texture = textureLoader.load('/images/asphalt.jpg');
-  const bumpMap = textureLoader.load('/images/asphalt-normals.png');
-  const vertices = geometry.attributes.position.array;
-
-  const data = Array.from(
-    new Uint16Array(await loadTerrain('/models/terrain.bin'))
-  ).map(v => (v / 65535) * 10);
-
-  console.log(
-    'Verticies and binary data lenghts should be equal',
-    vertices.length / 3,
-    '===',
-    data.length
-  );
-
-  for (let i = 0; i < data.length; i++) {
-    //@ts-ignore
-    vertices[i * 3 + 2] = data[i];
+  constructor({ _ }) {
+    window.THREE = THREE;
+    this._ = _;
+    this.init();
   }
 
-  const material = new MeshPhongMaterial({
-    color: 0xdddddd,
-    map: texture,
-    bumpMap,
-    bumpScale: 1,
-    shininess: 0,
-  });
-  const terrain = new Mesh(geometry, material);
+  async init() {
+    const { default: ThreeGeo } = await import(
+      'three-geo/dist/three-geo.esm.js'
+    );
 
-  texture.anisotropy = 2;
-  texture.wrapS = texture.wrapT = RepeatWrapping;
-  texture.repeat.set(128, 128);
+    // @ts-ignore
+    this.tgeo = new ThreeGeo({ tokenMapbox: MAPBOX_TOKEN });
 
-  terrain.rotation.x = -Math.PI / 2;
-  terrain.position.y = -5;
+    this.updateTile();
+    // _.on('user-move', this.checkPosition);
+  }
 
-  // terrain.receiveShadow = true;
-  return terrain;
+  checkPosition = position => {};
+
+  getTerrain(...args) {
+    switch (this.type) {
+      case 'rgb':
+        return this.tgeo.getTerrainRgb(...args);
+      case 'vector':
+        return this.tgeo.getVectorTerrain(...args);
+    }
+  }
+
+  updateTile = async () => {
+    const obj = await this.tgeo[TYPE_TO_METHOD[this.type]](
+      [44.494824, 34.165586], // [lat, lng]
+      5.0, // radius of bounding circle (km)
+      12 // zoom resolution
+    );
+
+    if (this.obj) {
+      this._.scene.remove(this.obj);
+      this._.observer.removeTeleportTargets(this.obj.children);
+    }
+
+    this._.scene.add(obj);
+    this._.observer.addTeleportTargets(obj.children);
+
+    this.obj = obj;
+
+    // obj.computeBoundingBox();
+
+    // @ts-ignore
+    window.terrain = obj;
+
+    obj.rotation.x = -Math.PI / 2;
+    obj.scale.set(200, 200, 200);
+  };
 }

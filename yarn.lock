@@ -7152,6 +7152,11 @@ text-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/text-extensions/-/text-extensions-1.9.0.tgz#1853e45fee39c945ce6f6c36b2d659b5aabc2a26"
   integrity sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==
 
+three-geo@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/three-geo/-/three-geo-1.4.5.tgz#744d8450814a262c771218d88858bfaf8952c1ef"
+  integrity sha512-HiGMP5gtb4U7hQ/AVng+oCk575k83Mb6B71oasb5qClTc5/EOOmddFoBfEUStJ5VTEn60R1IEhu3vpidZOcqtQ==
+
 three@^0.133.1:
   version "0.133.1"
   resolved "https://registry.yarnpkg.com/three/-/three-0.133.1.tgz#5606f4817d67a09d9212d4ccbd6826564774f8f4"
