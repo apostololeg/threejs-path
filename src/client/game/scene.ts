@@ -1,6 +1,8 @@
 import { Fog, Color, PCFSoftShadowMap, Object3D } from 'three';
 import RootThree from 'roothree';
 
+import userStore from '../stores/user';
+
 import navigation from './components/navigation';
 import createLight from './components/light';
 import createGround from './components/ground';
@@ -26,6 +28,7 @@ export default class Scene {
   updaters = [];
   observerMoveUpdater;
   moveTarget;
+  moveUpdaters = {}; // [userId]: fn
 
   constructor(params: any) {
     this.params = params;
@@ -69,7 +72,7 @@ export default class Scene {
     _.scene.add(skyscrapers);
 
     _.camera.position.y = 0.3;
-    _.camera.position.z = 0.5;
+    _.camera.position.z = 0.1;
 
     // const scale = 10;
     // const upScale = 1 * scale;
@@ -127,12 +130,13 @@ export default class Scene {
     this.params.onMove?.(position);
   };
 
-  moveUser = (obj: Object3D, pos) => {
+  moveUser(obj: Object3D, pos) {
+    const id = obj.uuid;
     const startPos = Object.values(obj.position.clone());
     const endPos = Object.values(pos);
 
     const clear = () => {
-      this.removeUpdater(this.observerMoveUpdater);
+      this.removeUpdater(this.moveUpdaters[id]);
       this._.scene.remove(this.moveTarget);
     };
 
@@ -142,9 +146,9 @@ export default class Scene {
     this.moveTarget = this._.observer.target.clone();
     this._.scene.add(this.moveTarget);
 
-    this.observerMoveUpdater = move(obj, [startPos, endPos], 5, clear);
-    this.addUpdater(this.observerMoveUpdater);
-  };
+    this.moveUpdaters[id] = move(obj, [startPos, endPos], 5, clear);
+    this.addUpdater(this.moveUpdaters[id]);
+  }
 
   removeUser(id) {
     this._.scene.remove(this.users[id]);
@@ -156,6 +160,8 @@ export default class Scene {
   }
 
   removeUpdater(fn) {
+    if (!fn) return;
+
     const index = this.updaters.indexOf(fn);
     if (index > -1) this.updaters.splice(index, 1);
   }
