@@ -3,22 +3,15 @@ import { withStore } from 'justorm/react';
 import cn from 'classnames';
 import { Button, Container, Spinner, Lazy } from '@foreverido/uilib';
 
-import game from '../../game';
-
 import S from './StartScreen.styl';
 
 export default withStore({
   user: ['isLoading', 'data'],
-})(function StartScreen({ store: { user } }) {
-  const [isStarted, setIsStarted] = useState(false);
-  const onEnterClick = useCallback(() => {
-    game.start();
-    setIsStarted(true);
-  }, []);
-
+  game: ['isStarted'],
+})(function StartScreen({ store: { user, game } }) {
   const renderContent = useCallback(() => {
     if (user.isLoading) return <Spinner size="l" />;
-    if (user.data) return <Button onClick={onEnterClick}>Enter</Button>;
+    if (user.data) return <Button onClick={() => game.start()}>Enter</Button>;
     // @ts-ignore
     return <Lazy loader={() => import('components/Auth/Auth')} />;
   }, [user.isLoading, user.data]);
@@ -28,7 +21,7 @@ export default withStore({
     <Container
       alignItemsCenter
       justifyContentCenter
-      className={cn(S.root, isStarted && S.isStarted)}
+      className={cn(S.root, game.isStarted && S.isStarted)}
     >
       {renderContent()}
     </Container>
