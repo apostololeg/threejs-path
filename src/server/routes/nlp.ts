@@ -6,7 +6,7 @@ import path from 'path';
 import multer from 'multer';
 
 import { getReply } from '../../services/nlp/gpt';
-import { getTranscript } from '../../services/nlp/transcription';
+// import { getTranscript } from '../../services/nlp/transcription';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,33 +32,32 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router
-  .post('/gpt', jsonParser, async (req, response) => {
-    const { messages } = req.body;
+router.post('/gpt', jsonParser, async (req, response) => {
+  const { messages } = req.body;
 
-    try {
-      const reply = await getReply(messages);
+  try {
+    const reply = await getReply(messages);
 
-      return response.status(200).json({ message: 'success', data: reply });
-    } catch (error) {
-      console.log(error.message);
-      return response.status(400).json({ message: error.message });
-    }
-  })
-  .post(
-    '/transcript',
-    upload.single('sample'),
-    async function (req: any, response, next) {
-      try {
-        const data = await getTranscript(req.file.path);
-        fs.unlinkSync(req.file.path);
+    return response.status(200).json({ message: 'success', data: reply });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(400).json({ message: error.message });
+  }
+});
+// .post(
+//   '/transcript',
+//   upload.single('sample'),
+//   async function (req: any, response, next) {
+//     try {
+//       const data = await getTranscript(req.file.path);
+//       fs.unlinkSync(req.file.path);
 
-        return response.status(200).json({ message: 'success', data });
-      } catch (error) {
-        console.log(error.message);
-        return response.status(400).json({ message: error.message });
-      }
-    }
-  );
+//       return response.status(200).json({ message: 'success', data });
+//     } catch (error) {
+//       console.log(error.message);
+//       return response.status(400).json({ message: error.message });
+//     }
+//   }
+// );
 
 export default router;
