@@ -1,9 +1,10 @@
-import { getReply } from './gpt';
+import { getReply, getAudio, replayBlob } from './gpt';
 import SpeechRecognition from './speech-recognition/main';
 import SpeechSynthesiser from './speech-synthesis';
 import { Author, Message } from './types';
 
-const recognition = new SpeechRecognition('/api/nlp/transcript');
+const transcriptUrl = 'http://localhost:5000/transcript';
+const recognition = new SpeechRecognition(transcriptUrl);
 const speechSynthesiser = new SpeechSynthesiser();
 
 recognition.continuous = false;
@@ -33,21 +34,32 @@ recognition.onresult = async event => {
   });
   logMessages();
 
+  if (!transcript) {
+    restartRecognition();
+    return;
+  }
+
   const reply = await getReply(state.messages);
 
-  if (transcript && reply) {
-    state.messages.push({
-      text: reply,
-      author: Author.Bot,
-      isBot: true,
-    });
-    logMessages();
-
-    speechSynthesiser.speak(reply);
-    speechSynthesiser.onend = restartRecognition;
-  } else {
+  if (!reply) {
     restartRecognition();
+    return;
   }
+
+  state.messages.push({
+    text: reply,
+    author: Author.Bot,
+    isBot: true,
+  });
+  logMessages();
+
+  speechSynthesiser.speak(reply);
+  speechSynthesiser.onend = restartRecognition;
+
+  // TODO implement receiving audio from API insetad of using speechSynthesiser
+  // const blob = await getAudio(reply);
+  // replayBlob(blob);
+  // setTimeout(restartRecognition, 3000);
 };
 
 recognition.onerror = event => {
