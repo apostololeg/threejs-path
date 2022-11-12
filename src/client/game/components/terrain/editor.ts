@@ -2,11 +2,10 @@ import { Color } from 'three';
 import gui, { getKey, saveKey } from '../../../tools/gui';
 
 export const tileColors = {
-  top: 0xff0000,
-  left: 0x00ff00,
-  right: 0x0000ff,
-  bottom: 0xffff00,
-  center: 0xffffff,
+  'top-left': 0xff0000,
+  'top-right': 0x00ff00,
+  'bottom-left': 0x0000ff,
+  'bottom-right': 0xffff00,
   default: 0x424240,
 };
 

@@ -65,7 +65,7 @@
     "serve": "^14.0.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "terrain-navigator": "^1.0.1",
+    "terrain-navigator": "^2",
     "three": "^0.145.0",
     "three-csm": "^2.0.0",
     "three-geo": "^1.4.5",

@@ -29,6 +29,8 @@ export default (_, [x, y, z]) => {
     mapBoxToken: MAPBOX_TOKEN,
     container: scene,
     material,
+    scale: 0.125,
+    zoom: 14,
     getPosition() {
       return observer.target.position;
     },
@@ -43,9 +45,7 @@ export default (_, [x, y, z]) => {
       if (oldObject) observer.removeTeleportTargets([oldObject]);
 
       scene.add(tile.object);
-
-      if (tile.isNear) observer.addTeleportTargets([tile.object]);
-
+      observer.addTeleportTargets([tile.object]);
       editor.dyeTile(tile);
     },
   } as TerrainParams;
