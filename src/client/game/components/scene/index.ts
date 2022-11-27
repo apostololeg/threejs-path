@@ -63,7 +63,7 @@ export default class Scene extends EventTarget {
           90,
           window.innerWidth / window.innerHeight,
           0.1,
-          1000
+          3000
         );
 
         camera.position.y = 2;

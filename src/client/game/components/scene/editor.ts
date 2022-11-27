@@ -12,7 +12,7 @@ export default _ => {
   const camera = _.observer.object.children[0];
 
   camera.position.y = state.cameraHeight;
-  folder.add(state, 'cameraHeight', 1, 300, 1).onChange(value => {
+  folder.add(state, 'cameraHeight', 1, 1000, 1).onChange(value => {
     saveKey(scope, 'cameraHeight', value);
     camera.position.y = value;
   });

@@ -13,7 +13,7 @@ const material = new MeshPhongMaterial({
   // wireframe: true,
 });
 
-const MAX_UPDATE_FREQ = 2000;
+const MAX_UPDATE_FREQ = 200;
 
 const DEFAULT_PARAMS = {
   coords: { lat: 44.449268, lon: 34.056132 }, // Yalta
@@ -23,14 +23,18 @@ const DEFAULT_PARAMS = {
 };
 
 export default (_, [x, y, z]) => {
-  const { scene, observer } = _._;
+  const { renderer, scene, observer } = _._;
   const editor = new Editor();
+
+  renderer.localClippingEnabled = true;
+
   const params = {
     mapBoxToken: MAPBOX_TOKEN,
     container: scene,
     material,
     scale: 0.125,
     zoom: 14,
+    minZoom: 12,
     getPosition() {
       return observer.target.position;
     },
@@ -41,11 +45,13 @@ export default (_, [x, y, z]) => {
         if (Number.isFinite(val)) position[key] = val;
       });
     },
-    onTileRebuilded(tile, oldObject) {
-      if (oldObject) observer.removeTeleportTargets([oldObject]);
+    onTileRebuilded(level, tile, oldObject) {
+      if (level === 0) {
+        if (oldObject) observer.removeTeleportTargets([oldObject]);
+        observer.addTeleportTargets([tile.object]);
+      }
 
       scene.add(tile.object);
-      observer.addTeleportTargets([tile.object]);
       editor.dyeTile(tile);
     },
   } as TerrainParams;
@@ -54,15 +60,15 @@ export default (_, [x, y, z]) => {
   else params.coords = DEFAULT_PARAMS.coords;
 
   const terrain = new Terrain(params);
-
-  window.terrain = terrain;
   terrain.start();
+  // @ts-ignore
+  window.terrain = terrain;
 
   editor.init({ material, tiles: terrain.tiles });
 
   _.addEventListener(
     'user-move',
-    throttle(terrain.update, MAX_UPDATE_FREQ, { trailing: true })
+    throttle(() => terrain.update(), MAX_UPDATE_FREQ, { trailing: true })
   );
 
   return terrain;

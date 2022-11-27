@@ -222,6 +222,9 @@ export default (_env, argv) => {
         devMiddleware: {
           writeToDisk: true,
         },
+        proxy: {
+          '/api': 'http://localhost:3003',
+        },
       },
     });
   }
