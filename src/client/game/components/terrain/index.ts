@@ -24,7 +24,7 @@ const DEFAULT_PARAMS = {
 
 export default (_, [x, y, z]) => {
   const { renderer, scene, observer } = _._;
-  const editor = new Editor();
+  const editor = new Editor({ material });
 
   renderer.localClippingEnabled = true;
 
@@ -32,9 +32,9 @@ export default (_, [x, y, z]) => {
     mapBoxToken: MAPBOX_TOKEN,
     container: scene,
     material,
-    scale: 0.125,
+    scale: 1 / 64,
     zoom: 14,
-    minZoom: 12,
+    minZoom: 13,
     getPosition() {
       return observer.target.position;
     },

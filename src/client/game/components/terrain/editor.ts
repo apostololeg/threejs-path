@@ -19,6 +19,10 @@ export default class TerrainEditor {
     wireframe: getKey('terrain', 'wireframe') ?? false,
   };
 
+  constructor({ material }) {
+    if (this.values.wireframe) material.wireframe = true;
+  }
+
   init({ material, tiles }) {
     this.material = material;
     this.tiles = tiles;
