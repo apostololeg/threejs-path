@@ -32,7 +32,7 @@ export default (_, [x, y, z]) => {
     mapBoxToken: MAPBOX_TOKEN,
     container: scene,
     material,
-    scale: 1 / 64,
+    scale: 1 / 16,
     zoom: 14,
     minZoom: 11,
     getPosition() {
