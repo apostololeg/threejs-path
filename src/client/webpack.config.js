@@ -23,6 +23,7 @@ import paths from './paths.js';
 
 export default (_env, argv) => {
   const isDev = argv.mode === 'development';
+
   const config = {
     entry: `${paths.src}/index.tsx`,
     output: {

@@ -19,6 +19,7 @@
     "build": "NODE_ENV=production webpack  --config ./src/client/webpack.config.js --progress",
     "server": "nodemon --watch ./src/server --ext ts,json --exec \"node --experimental-specifier-resolution=node --loader ts-node/esm ./src/server/index.ts\"",
     "release": "standard-version",
+    "db": "prisma --schema=./src/prisma/schema.prisma db",
     "release:patch": "yarn release -- --release-as patch",
     "release:minor": "yarn release -- --release-as minor",
     "release:major": "yarn release -- --release-as major",
@@ -29,10 +30,13 @@
       "postchangelog": "replace ' (#\\d+)' ' [`$1`](github.com/@foreverido/world.js/issues/$1)' CHANGELOG.md"
     }
   },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "dependencies": {
     "@foreverido/uilib": "^3.4.1",
     "@mapbox/sphericalmercator": "^1.2.0",
-    "@prisma/client": "^4.3.1",
+    "@prisma/client": "^5.2.0-dev.71",
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/three": "^0.143.1",
@@ -53,7 +57,7 @@
     "mini-css-extract-plugin": "^2.6.1",
     "multer": "^1.4.5-lts.1",
     "openai": "^3.0.0",
-    "prisma": "^4.3.1",
+    "prisma": "^5.2.0-dev.71",
     "qs": "^6.11.0",
     "react": "^18.2.0",
     "resize-image-data": "^0.3.1",
@@ -65,7 +69,7 @@
     "serve": "^14.0.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "terrain-navigator": "^2",
+    "terrain-navigator": "^2.0.1",
     "three": "^0.145.0",
     "three-csm": "^2.0.0",
     "three-geo": "^1.4.5",

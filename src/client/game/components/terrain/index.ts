@@ -34,7 +34,7 @@ export default (_, [x, y, z]) => {
     material,
     scale: 1 / 64,
     zoom: 14,
-    minZoom: 13,
+    minZoom: 11,
     getPosition() {
       return observer.target.position;
     },
